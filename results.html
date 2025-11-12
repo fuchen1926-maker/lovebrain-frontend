@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱脑测试结果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #E11299;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .score-display {
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E6 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid #FFB6C1;
+        }
+        
+        .score-number {
+            font-size: 3.5em;
+            font-weight: 800;
+            color: #E11299;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .score-label {
+            font-size: 1.3em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .heart-container {
+            position: relative;
+            width: 200px;
+            height: 180px;
+            margin: 0 auto 30px;
+        }
+        
+        .heart-outer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            fill: #FFE4E6;
+            stroke: #FFB6C1;
+            stroke-width: 2;
+            z-index: 1;
+        }
+        
+        .heart-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, #E11299, #FF69B4);
+            border-radius: 0 0 100px 100px;
+            z-index: 2;
+            transition: height 1.5s ease-in-out;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .heart-mask {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 180'%3E%3Cpath d='M100,30 C110,0 140,0 150,30 C160,60 130,90 100,120 C70,90 40,60 50,30 C60,0 90,0 100,30 Z' fill='white'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            z-index: 3;
+            pointer-events: none;
+        }
+        
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #E11299;
+            z-index: 4;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        
+        .level-display {
+            margin: 20px 0;
+            padding: 20px;
+            background: #FFF0F5;
+            border-radius: 15px;
+            border: 1px solid #FFE4E6;
+        }
+        
+        .level-name {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #E11299;
+            margin-bottom: 10px;
+        }
+        
+        .level-evaluation {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .level-comment {
+            font-size: 1.1em;
+            color: #666;
+            font-style: italic;
+            line-height: 1.5;
+        }
+        
+        .dimensions {
+            margin: 30px 0;
+        }
+        
+        .dimension {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+            border-left: 3px solid #E11299;
+        }
+        
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .dimension-name {
+            font-weight: 700;
+            color: #555;
+            font-size: 1em;
+        }
+        
+        .dimension-score {
+            font-size: 1em;
+            font-weight: 700;
+            color: #E11299;
+        }
+        
+        .dimension-degree {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #E11299;
+            margin: 6px 0;
+        }
+        
+        .dimension-comment {
+            color: #555;
+            line-height: 1.4;
+            margin-top: 6px;
+            font-size: 0.85em;
+        }
+        
+        .bar-chart {
+            height: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin: 8px 0;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E11299, #FF69B4);
+            border-radius: 8px;
+            transition: width 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.7em;
+        }
+        
+        .bar-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        
+        .bar-marker {
+            width: 1px;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E11299, #FF69B4);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .score-number {
+                font-size: 2.8em;
+            }
+            
+            .heart-container {
+                width: 160px;
+                height: 144px;
+            }
+            
+            .dimension-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .dimension-score {
+                margin-top: 3px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .score-number {
+                font-size: 2.2em;
+            }
+            
+            .heart-container {
+                width: 140px;
+                height: 126px;
+            }
+            
+            .score-text {
+                font-size: 1.4em;
+            }
+            
+            .dimension {
+                padding: 10px;
+            }
+            
+            .dimension-name {
+                font-size: 0.9em;
+            }
+            
+            .dimension-comment {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>恋爱脑测试结果</h1>
+            <p>基于您的回答，我们分析了您的恋爱倾向</p>
+        </div>
+        
+        <div class="score-display">
+            <div class="score-label">您的恋爱指数</div>
+            <div class="score-number" id="total-score">0</div>
+            
+            <div class="heart-container">
+                <svg class="heart-outer" viewBox="0 0 200 180">
+                    <path d="M100,30 C110,0 140,0 150,30 C160,60 130,90 100,120 C70,90 40,60 50,30 C60,0 90,0 100,30 Z" 
+                          fill="transparent" stroke="#FFB6C1" stroke-width="2"/>
+                </svg>
+                <div class="heart-fill" id="heart-fill"></div>
+                <div class="heart-mask"></div>
+                <div class="score-text" id="heart-score">0</div>
+            </div>
+            
+            <div class="level-display">
+                <div class="level-name" id="level-name">等级计算中...</div>
+                <div class="level-evaluation" id="level-evaluation"></div>
+                <div class="level-comment" id="level-comment"></div>
+            </div>
+        </div>
+        
+        <div class="dimensions" id="dimensions-container">
+            <!-- 维度分析将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="actions">
+            <a href="questionnaire.html" class="btn btn-primary">重新测试</a>
+            <a href="index.html" class="btn btn-secondary">返回首页</a>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数中获取分数和维度分
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            const score = parseInt(params.get('score')) || 0;
+            const dimensionScores = {};
+            
+            // 获取所有维度的分数
+            const dimensions = [
+                'emotional_dependence', 
+                'idealization_filter', 
+                'boundary_sacrifice',
+                'loss_of_self', 
+                'relationship_centrality'
+            ];
+            
+            // 从URL参数获取维度分数，如果没有则使用随机值（仅用于演示）
+            dimensions.forEach(dim => {
+                dimensionScores[dim] = parseInt(params.get(`score_${dim}`)) || Math.floor(Math.random() * 32) + 1;
+            });
+            
+            return { score, dimensionScores };
+        }
+        
+        // 更新心形温度计
+        function updateHeartThermometer(score) {
+            const heartFill = document.getElementById('heart-fill');
+            const heartScore = document.getElementById('heart-score');
+            const totalScore = document.getElementById('total-score');
+            
+            // 计算填充高度 (0-160分对应0%-100%)
+            const fillPercentage = Math.min(100, Math.max(0, (score / 160) * 100));
+            
+            // 更新心形填充
+            heartFill.style.height = `${fillPercentage}%`;
+            
+            // 更新分数显示
+            heartScore.textContent = score;
+            totalScore.textContent = score;
+            
+            // 添加动画效果
+            heartFill.style.transition = 'height 1.5s ease-in-out';
+        }
+        
+        // 根据分数确定等级和显示内容
+        function determineLevel(score) {
+            let levelName, evaluation, comment;
+            
+            if (score >= 0 && score <= 30) {
+                levelName = "绝对理性";
+                evaluation = "你站在爱情的风暴眼中心，平静地喝着茶。对你而言，爱情是生活这顿大餐里的'可选甜点'，而不是'主菜'。";
+                comment = "你的理性光芒过于耀眼。你不是没有爱，你只是更爱清醒的自己。";
+            } else if (score >= 31 && score <= 60) {
+                levelName = "偶有触动";
+                evaluation = "你的心脏安装了高精度的'情感保险丝'。你享受爱情的甜美，但绝不让它'烧坏'你的主板。";
+                comment = "激情是燃点，但自爱才是控制熔点的关键；你的爱能沸腾，但绝不会蒸发你自己。";
+            } else if (score >= 61 && score <= 90) {
+                levelName = "中度沉浸";
+                evaluation = "你是理想的'航海家'。你愿意为了ta改变航向，也享受两人共同对抗风浪的浪漫，但你始终没有忘记自己的目的地。";
+                comment = "'恋爱脑'和'理性脑'的完美混合体——俗称'正常人'。";
+            } else if (score >= 91 && score <= 120) {
+                levelName = "高度上头";
+                evaluation = "你已经准备好为爱'冲锋'了。你手持盾牌（ta的优点），无视所有警告（ta的缺点），一往无前。";
+                comment = "朋友们已经开始为你准备'劝分组'的 PPT 了，而你只会觉得他们'不懂爱'。";
+            } else if (score >= 121 && score <= 159) {
+                levelName = "终极恋爱脑";
+                evaluation = "你不是在恋爱，你是在'殉道'。你的'堡垒'已经拆了，你的'画像'已经换了，你的'北极星'就是ta的眼睛。";
+                comment = "如果爱情是一门宗教，你就是那个最虔诚的圣徒。";
+            } else if (score === 160) {
+                levelName = "为爱痴狂";
+                evaluation = "满分！你就是'恋爱脑'本脑。你不是在寻找爱情，你就是爱情本身。";
+                comment = "你的存在，就是为了告诉剩下的人：是的，那种'为了ta与全世界为敌'的剧情是真实存在的。";
+            } else {
+                levelName = "未知等级";
+                evaluation = "分数异常，无法确定等级";
+                comment = "请重新测试";
+            }
+            
+            return { levelName, evaluation, comment };
+        }
+        
+        // 更新等级显示
+        function updateLevelDisplay(score) {
+            const { levelName, evaluation, comment } = determineLevel(score);
+            
+            document.getElementById('level-name').textContent = levelName;
+            document.getElementById('level-evaluation').textContent = evaluation;
+            document.getElementById('level-comment').textContent = comment;
+        }
+        
+        // 根据维度分数获取程度和点评
+        function getDimensionAnalysis(dimension, score) {
+            const dimensionData = {
+                emotional_dependence: {
+                    name: "情感依赖度 (情感的罗盘)",
+                    levels: {
+                        "1-8": { degree: "低度独立", comment: "🧭 情绪舵手： 你的情感罗盘是独立的，对方的言行只是天气变化，而非气候主宰。你的自我满足感和情绪韧性极高，能清晰地将自身幸福与对方的行为区别开。" },
+                        "9-16": { degree: "轻度牵动", comment: "☁️ 间歇晴雨： 你的情绪会受对方影响，比如'已读不回'会让你稍感不安，但很快能自我调节。你意识到了那根'线'的存在，并能主动拉回，对方的行为只是你生活中的一个重要'变量'，而非'常数'。" },
+                        "17-24": { degree: "中度捆绑", comment: "🌪️ 情绪联动： 你的'线'已经拉得比较紧。对方的小情绪或冷淡能迅速影响你的日常。你的自我价值感开始与对方的反馈挂钩，你每天会多次检查对方的'信号'来确定自己的情绪底色。" },
+                        "25-32": { degree: "重度掌控", comment: "🚨 罗盘失灵： 对方的每一次呼吸、每一个表情都成为你的情绪G点。你的心脏完全被这根'线'牵引，幸福与焦虑呈极端的同步震荡。你不再拥有独立的情绪主权，完全活在对方给你的'反应'里。" }
+                    }
+                },
+                idealization_filter: {
+                    name: "理想化滤镜 (爱情的美颜相机)",
+                    levels: {
+                        "1-8": { degree: "低度独立", comment: "🧭 情绪舵手： 你的情感罗盘是独立的，对方的言行只是天气变化，而非气候主宰。你的自我满足感和情绪韧性极高，能清晰地将自身幸福与对方的行为区别开。" },
+                        "9-16": { degree: "轻度牵动", comment: "☁️ 间歇晴雨： 你的情绪会受对方影响，比如'已读不回'会让你稍感不安，但很快能自我调节。你意识到了那根'线'的存在，并能主动拉回，对方的行为只是你生活中的一个重要'变量'，而非'常数'。" },
+                        "17-24": { degree: "中度捆绑", comment: "🌪️ 情绪联动： 你的'线'已经拉得比较紧。对方的小情绪或冷淡能迅速影响你的日常。你的自我价值感开始与对方的反馈挂钩，你每天会多次检查对方的'信号'来确定自己的情绪底色。" },
+                        "25-32": { degree: "重度掌控", comment: "🚨 罗盘失灵： 对方的每一次呼吸、每一个表情都成为你的情绪G点。你的心脏完全被这根'线'牵引，幸福与焦虑呈极端的同步震荡。你不再拥有独立的情绪主权，完全活在对方给你的'反应'里。" }
+                    }
+                },
+                boundary_sacrifice: {
+                    name: "界限牺牲度 (坍塌的堡垒)",
+                    levels: {
+                        "1-8": { degree: "低度妥协", comment: "🧱 坚固堡垒： 你拥有清晰且坚固的自我底线。你的爱是'有条件'且健康的，能将不尊重、谎言等视为对关系不可逾越的红线。你知道保护自己的城墙就是保护关系的健康。" },
+                        "9-16": { degree: "轻度让步", comment: "🏗️ 可调底线： 你愿意在一些非原则性问题上进行弹性让步，以保持关系的和谐。但在涉及人格尊严和核心价值观的底线问题上，你能够坚守，不会轻易为了挽留而'拆墙'。" },
+                        "17-24": { degree: "中度退让", comment: "🚧 墙体受损： 你开始将一些原本坚守的'底线'视为'可以原谅的例外'。为了避免关系破裂，你愿意牺牲自己的感受，甚至容忍一些本质上不健康的行为。你的爱已经开始背负'代价'。" },
+                        "25-32": { degree: "重度自毁", comment: "💣 堡垒坍塌： 你的底线已经完全失守，为了维系关系，你正在亲手拆除保护自己的城墙。你所谓的'无条件'的爱，实际上是对自我权利和尊严的彻底放弃，你的安全感完全取决于不健康的关系存在。" }
+                    }
+                },
+                loss_of_self: {
+                    name: "自我迷失度 (褪色的画像)",
+                    levels: {
+                        "1-8": { degree: "低度融合", comment: "🎨 独立个体： 你是拥有鲜明色彩的独立个体。你的爱好、朋友圈和个人目标都保持着旺盛的生命力，你懂得'爱'是两个完整圆的相交，而非互相吞噬。" },
+                        "9-16": { degree: "轻度调整", comment: "🖼️ 相互影响： 你会为了迎合或陪伴对方而调整你的部分喜好，但你的核心身份和重要兴趣圈仍清晰可见。你是在拓宽自己的画像，而不是让它褪色。" },
+                        "17-24": { degree: "中度模糊", comment: "👤 身份认同危机： 你的'画像'开始明显褪色。你发现自己正在不知不觉中用ta的喜好定义自己的喜好，独立活动的频率显著降低。你开始难以区分'我的快乐'和'我们的快乐'。" },
+                        "25-32": { degree: "重度消融", comment: "👻 自我虚无： 那个独一无二的'我'已经被完全边缘化，你几乎只活在'我们'的概念中。你照镜子时看到的倒影，是一个为了爱而精心修剪、只为ta而存在的依附品。你已失去自我支持的能力。" }
+                    }
+                },
+                relationship_centrality: {
+                    name: "关系优先度 (人生的北极星)",
+                    levels: {
+                        "1-8": { degree: "低度崇拜", comment: "🌍 多元星图： 你的'北极星'是多元的，个人成就、友谊、家庭和爱情共同构成了你人生的广阔星图。爱情是重要的组成部分，但绝非唯一的终极答案。" },
+                        "9-16": { degree: "轻度倾斜", comment: "🌟 靠前之星： 爱情在你的人生中占据重要地位，你会优先考虑它，但当它与你的长期事业或人生目标冲突时，你仍能做出理智的权衡和选择。" },
+                        "17-24": { degree: "中度聚焦", comment: "🔭 单一指向： 你开始倾向于将'拥有一段深刻的关系'视为人生最大的意义和成就。你的人生蓝图必须以'两个人的幸福'为前提才能开始动笔，事业和朋友的优先级明显下降。" },
+                        "25-32": { degree: "重度执念", comment: "🚨 唯一北极星： 爱情是你人生中唯一且绝对的北极星，也是你所有动力的来源。你坚信没有爱情的人生是不完整甚至失败的。这种信念让你容易为了关系牺牲一切，陷入非此不可的生存焦虑。" }
+                    }
+                }
+            };
+            
+            let level;
+            if (score >= 1 && score <= 8) level = "1-8";
+            else if (score >= 9 && score <= 16) level = "9-16";
+            else if (score >= 17 && score <= 24) level = "17-24";
+            else level = "25-32";
+            
+            return {
+                name: dimensionData[dimension].name,
+                degree: dimensionData[dimension].levels[level].degree,
+                comment: dimensionData[dimension].levels[level].comment
+            };
+        }
+        
+        // 生成维度分析显示
+        function displayDimensionAnalysis(dimensionScores) {
+            const container = document.getElementById('dimensions-container');
+            
+            let html = '';
+            for (const [dim, score] of Object.entries(dimensionScores)) {
+                const analysis = getDimensionAnalysis(dim, score);
+                const percentage = Math.round((score / 32) * 100);
+                
+                html += `
+                    <div class="dimension">
+                        <div class="dimension-header">
+                            <div class="dimension-name">${analysis.name}</div>
+                            <div class="dimension-score">${score}/32</div>
+                        </div>
+                        <div class="dimension-degree">${analysis.degree}</div>
+                        <div class="bar-chart">
+                            <div class="bar-markers">
+                                <div class="bar-marker" style="left: 25%"></div>
+                                <div class="bar-marker" style="left: 50%"></div>
+                                <div class="bar-marker" style="left: 75%"></div>
+                            </div>
+                            <div class="bar-fill" style="width: ${percentage}%">${score}</div>
+                        </div>
+                        <div class="dimension-comment">${analysis.comment}</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            
+            // 添加柱状图动画
+            setTimeout(() => {
+                const bars = document.querySelectorAll('.bar-fill');
+                bars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 500);
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const { score, dimensionScores } = getUrlParams();
+            
+            // 更新界面
+            updateHeartThermometer(score);
+            updateLevelDisplay(score);
+            displayDimensionAnalysis(dimensionScores);
+            
+            // 添加加载完成后的微交互
+            setTimeout(() => {
+                document.querySelector('.container').style.opacity = '1';
+                document.querySelector('.container').style.transform = 'translateY(0)';
+            }, 100);
+        });
+        
+        // 初始样式设置
+        document.querySelector('.container').style.opacity = '0';
+        document.querySelector('.container').style.transform = 'translateY(20px)';
+        document.querySelector('.container').style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    </script>
+</body>
+</html>

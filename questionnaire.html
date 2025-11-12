@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱脑倾向测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFF0F5; /* 淡粉色背景 */
+            color: #333;
+        }
+        .progress-text {
+            text-align: center;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background-color: #E11299; /* 恋爱脑粉色 */
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+        .question-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            min-height: 250px;
+        }
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            font-weight: bold;
+            line-height: 1.5;
+            color: #1a1a2e;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .option:hover {
+            border-color: #E11299;
+            background-color: #fffafc;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            border-color: #E11299;
+            background-color: #FFF0F5;
+            font-weight: bold;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .nav-btn, .submit-btn {
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .nav-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .submit-btn {
+            width: 100%;
+            background-color: #E11299;
+            display: none; /* 默认隐藏 */
+        }
+        .submit-btn:hover {
+            background-color: #C2185B;
+        }
+        .next-btn {
+            width: 100%;
+            background-color: #E11299;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 12px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .next-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-text">进度: <span id="progress">1</span>/30</div>
+    <div class="progress-bar">
+        <div class="progress" id="progress-bar"></div>
+    </div>
+
+    <form id="questionnaire-form">
+        <div class="question-container" id="current-question">
+            </div>
+        <div class="navigation">
+            <button type="button" class="nav-btn" id="prev-btn" disabled>上一题</button>
+            <button type="button" class="nav-btn" id="next-btn">下一题</button>
+        </div>
+        <button type="submit" class="submit-btn" id="submit-btn">查看结果</button>
+    </form>
+
+    <!-- 调试信息 -->
+    <div class="debug-info" id="debug-info" style="display: none;">
+        <strong>调试信息:</strong>
+        <div id="answered-count">已回答: 0/30</div>
+        <div id="unanswered-questions">未答题目: </div>
+    </div>
+
+    <script>
+        // --- 1. 数据定义 ---
+        
+        // *** 关键：API 地址 ***
+        const API_URL = 'querulous-chelsea-boyn-5cf9ffef.koyeb.app'; 
+
+        // 维度定义 (必须与后端 index.js 中的 DIMENSIONS 数组一致)
+        const DIMENSIONS = [
+            'emotional_dependence', 'idealization_filter', 'boundary_sacrifice',
+            'loss_of_self', 'relationship_centrality'
+        ];
+        const Q_PER_DIMENSION = 6; // 每个维度 6 题
+        const TOTAL_QUESTIONS = 30; // 总共 30 题
+
+        // 30个问题 - 更新为新的题库
+        const QUESTIONS = [
+            // D1: 情感依赖度 (0-5)
+            "对方的情绪（无论好坏）会直接决定我一天的心情。",
+            "如果对方没有马上回复我的信息，我就会开始担心是不是自己做错了什么。",
+            "对方对我的评价（比如夸我或批评我）会极大地影响我如何看待自己。",
+            "我宁愿忍受ta的冷漠，也不愿想象没有ta是否会有更好的生活。",
+            "对我来说，没有什么比对方的'已读不回'更能让我瞬间崩溃或胡思乱想了。",
+            "哪怕是买件衣服或换个发型这样的小事，我也会下意识地先考虑'ta会不会喜欢？'",
+            
+            // D2: 理想化滤镜 (6-11)
+            "就算对方顶着三天没洗的油头，我也觉得那是独一无二的'造型感'，甚至有点迷人。",
+            "ta挖鼻屎或当众抖腿的样子……嗯，虽然有点尴尬，但至少说明ta在我面前很'真实'，不做作。",
+            "朋友们都指出了ta的一些明显缺陷（比如爱吹牛、健忘），但我坚信是他们不懂ta的好。",
+            "ta对我发脾气，我首先反思的是不是我哪里做得不够好，才惹ta生气的。",
+            "我相信只要有爱，ta身上所有的小毛病最终都会为我改变（或者我根本不在乎）。",
+            "ta在聊天时心不在焉（比如回复慢），我猜ta一定是在思考什么大事，而不是故意冷落我。",
+            
+            // D3: 界限牺牲度 (12-17)
+            "明明知道ta心里还装着另一个人（比如前任或暗恋对象），我还是无法控制地爱着ta，幻想着ta总有一天会像爱那个ta一样爱我。",
+            "如果我发现ta在情感上（甚至身体上）出轨了，我的第一反应可能是'我该如何挽回ta'，而不是'我该如何离开'。",
+            "我抓到过ta对我撒一些很严重的谎，但我宁愿假装相信，也不愿面对摊牌的后果。",
+            "ta在朋友面前公开取笑我或贬低我，我也能忍受，因为我认为ta的开心比我的开心更加重要。",
+            "我所有的朋友和家人都严重警告我ta不适合我，但我会为了ta疏远他们。",
+            "为了ta，我心甘情愿地放弃对我来说很重要的工作机会、学业规划，甚至借钱给ta（即使知道ta可能不还）。",
+            
+            // D4: 自我迷失度 (18-23)
+            "我曾经热爱的个人爱好，现在感觉像是蒙上了一层灰尘，只有在和ta在一起时，我才感觉世界是彩色的。",
+            "我感觉自己像一块海绵，不知不觉中吸满了ta的喜好和风格，却忘了自己原本是什么颜色的。",
+            "我的人生十字路口，指示牌上写的不是'我的未来'，而是'我们的未来'。",
+            "我的社交圈就像一个漏斗，最后所有的人际关系都流向了ta这一个出口。",
+            "我感觉对方像是我生活的'操作系统'，如果ta不在了，我不知道自己该如何'启动'。",
+            "我未来的那张蓝图，每一笔都是用'我们'的墨水画的，几乎没有'我'的留白。",
+            
+            // D5: 关系优先度 (24-29)
+            "我坚信'没有爱情的人生是不完整的'，它是我所有动力的最终来源。",
+            "为了这段关系而牺牲我自己的目标（比如一个梦想的offer或旅行），对我来说不算是'损失'，而是对'真正重要的事'的一种投资。",
+            "我的人生蓝图是先找到'对的人'，然后再和ta一起决定其他事情（比如住在哪，做什么工作）；而不是先规划好我的人生，再让ta加入。",
+            "当我思考人生的最终意义时，我得出的答案总是关于'深刻地爱与被爱'，而不是关于'实现个人成就'或'探索世界'。",
+            "设想我的人生走到尽头，我最大的恐惧不是'我没有实现我的梦想'，而是'我没有完整地体验过一场刻骨铭心的爱情'。",
+            "我倾向于用'ta是否处于一段幸福的关系中'来衡量一个朋友是否'过得好'，而不是主要看ta的事业或个人状态。"
+        ];
+
+        // 选项 (0-4分)
+        const OPTIONS = [
+            { text: "坚决反对", value: 0 },
+            { text: "反对", value: 1 },
+            { text: "中立", value: 2 },
+            { text: "认同", value: 3 },
+            { text: "非常认同", value: 4 }
+        ];
+
+        // --- 2. 状态管理 ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+        
+        // DOM 元素
+        const questionContainer = document.getElementById('current-question');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const form = document.getElementById('questionnaire-form');
+        const debugInfo = document.getElementById('debug-info');
+        const answeredCount = document.getElementById('answered-count');
+        const unansweredQuestions = document.getElementById('unanswered-questions');
+
+        // --- 3. 核心函数 ---
+
+        function showQuestion(index) {
+            const question = QUESTIONS[index];
+            questionContainer.innerHTML = `
+                <div class="question">${index + 1}. ${question}</div>
+                <div class="options">
+                    ${OPTIONS.map(option => `
+                        <label class="option" for="q${index}-v${option.value}">
+                            <input type="radio" id="q${index}-v${option.value}" name="q${index}" value="${option.value}">
+                            ${option.text}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            
+            // 恢复已选择的答案
+            if (userAnswers[index] !== null) {
+                const selectedInput = questionContainer.querySelector(`input[value="${userAnswers[index]}"]`);
+                if (selectedInput) {
+                    selectedInput.checked = true;
+                    selectedInput.parentElement.classList.add('selected');
+                }
+            }
+            
+            // 为选项添加点击事件
+            questionContainer.querySelectorAll('.option').forEach(label => {
+                label.addEventListener('click', () => {
+                    const input = label.querySelector('input');
+                    if (!input) return;
+                    
+                    // 记录答案
+                    userAnswers[index] = parseInt(input.value);
+                    
+                    // 更新UI
+                    questionContainer.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    label.classList.add('selected');
+                    
+                    // 启用下一题按钮
+                    nextBtn.disabled = false;
+                    
+                    // 更新调试信息
+                    updateDebugInfo();
+                    
+                    // 不再自动跳转 - 由用户手动点击"下一题"
+                });
+            });
+            
+            // 更新调试信息
+            updateDebugInfo();
+        }
+
+        function nextQuestion() {
+            // 检查当前题目是否已回答
+            if (userAnswers[currentQuestionIndex] === null) {
+                alert("请先回答当前问题！");
+                return;
+            }
+            
+            if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+                updateNavigation();
+                // 禁用下一题按钮，直到用户选择答案
+                nextBtn.disabled = true;
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+                updateProgress();
+                updateNavigation();
+                // 上一题已经回答过，所以启用下一题按钮
+                nextBtn.disabled = false;
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / TOTAL_QUESTIONS) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestionIndex + 1}`;
+        }
+
+        function updateNavigation() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            
+            // 如果是最后一题，显示提交按钮，隐藏下一题按钮
+            if (currentQuestionIndex === TOTAL_QUESTIONS - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        function updateDebugInfo() {
+            // 计算已回答和未回答的题目
+            const answered = userAnswers.filter(answer => answer !== null).length;
+            const unanswered = [];
+            
+            userAnswers.forEach((answer, index) => {
+                if (answer === null) {
+                    unanswered.push(index + 1); // 显示题号（从1开始）
+                }
+            });
+            
+            answeredCount.textContent = `已回答: ${answered}/${TOTAL_QUESTIONS}`;
+            unansweredQuestions.textContent = `未答题目: ${unanswered.join(', ') || '无'}`;
+            
+            // 显示调试信息（开发时启用）
+            // debugInfo.style.display = 'block';
+        }
+
+        // *** 关键修改：计算总分和维度分 ***
+        function calculateScores() {
+            let totalScore = 0; // 用于心形温度计 (0-120)
+            const dimensionScores = {}; // 用于发送到后端 (0-24)
+            
+            // 初始化维度分数为 0
+            DIMENSIONS.forEach(dim => { dimensionScores[dim] = 0; });
+
+            userAnswers.forEach((answer, index) => {
+                if (answer === null) {
+                    console.warn(`第 ${index + 1} 题未回答，将使用默认值 2`);
+                    answer = 2; // 使用中立值作为默认值
+                }
+
+                // 累加到总分
+                totalScore += answer;
+
+                // 累加到对应的维度分
+                const dimIndex = Math.floor(index / Q_PER_DIMENSION);
+                const dimName = DIMENSIONS[dimIndex];
+                dimensionScores[dimName] += answer;
+            });
+            
+            return { totalScore, dimensionScores };
+        }
+
+        // --- 4. 事件监听 ---
+        
+        prevBtn.addEventListener('click', prevQuestion);
+        nextBtn.addEventListener('click', nextQuestion);
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // 检查是否所有题目都已回答
+            const allAnswered = userAnswers.every(answer => answer !== null);
+            
+            if (!allAnswered) {
+                 const firstUnanswered = userAnswers.findIndex(answer => answer === null);
+                 alert(`请回答所有问题才能查看结果！\n\n未回答的题目：第 ${firstUnanswered + 1} 题`);
+                 
+                 // 跳转到第一个未回答的问题
+                 currentQuestionIndex = firstUnanswered;
+                 showQuestion(currentQuestionIndex);
+                 updateProgress();
+                 updateNavigation();
+                 return;
+            }
+
+            // *** 关键修改：调用后端 API ***
+            
+            // 1. 计算总分和维度分
+            const { totalScore, dimensionScores } = calculateScores();
+
+            // 2. 发送 POST 请求到后端 (获取排名)
+            try {
+                console.log("正在发送 5 个维度分数到后端:", dimensionScores);
+
+                const response = await fetch(API_URL, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dimensionScores) // 发送 5 个维度分
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`后端错误: ${response.status} - ${errorData.error}`);
+                }
+                
+                // 3. 接收后端返回的排名
+                const result = await response.json(); // result.rankings
+                console.log("后端返回的排名结果:", result.rankings);
+                
+                // 4. 带着所有数据跳转到结果页
+                redirectToResults(totalScore, dimensionScores, result.rankings); 
+
+            } catch (error) {
+                console.error("通信或计算失败:", error);
+                alert(`通信失败，请检查后端服务器(lovebrain-backend)是否运行在 ${API_URL}\n\n错误详情: ${error.message}`);
+            }
+        });
+
+        // *** 关键修改：跳转函数现在需要发送总分和维度分 ***
+        function redirectToResults(totalScore, dimensionScores, rankings) {
+            let params = new URLSearchParams();
+            
+            // 1. 添加总分 (用于心形温度计)
+            params.append('score', totalScore); 
+            
+            // 2. 添加维度分数 (用于柱状图显示)
+            for (const dim of DIMENSIONS) {
+                params.append(`score_${dim}`, dimensionScores[dim]);
+            }
+            
+            // 3. 编码排名百分比 (用于未来的雷达图)
+            for (const dim of DIMENSIONS) {
+                params.append(`rank_${dim}`, rankings[dim]);
+            }
+            
+            // 跳转
+            window.location.href = `results.html?${params.toString()}`;
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            showQuestion(currentQuestionIndex);
+            updateProgress();
+            updateNavigation();
+            updateDebugInfo();
+            
+            // 初始状态下禁用下一题按钮，直到用户选择答案
+            nextBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>

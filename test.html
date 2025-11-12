@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究知情同意书</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #E11299; /* 恋爱脑主题粉色 */
+            text-align: center;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            font-size: 1.8em;
+            margin-top: 0;
+        }
+        
+        .consent-text {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #fafafa;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        h3 {
+            color: #C2185B;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            padding-left: 0;
+        }
+        
+        li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .checkbox-group {
+            margin: 25px 0;
+            padding: 15px;
+            background-color: #FFF0F5;
+            border: 1px solid #E11299;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .checkbox-group label {
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #consent-check {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        #nextButton {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(90deg, #E11299, #C2185B);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        #nextButton:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        #nextButton:hover:enabled {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(225, 17, 153, 0.3);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                margin: 10px auto;
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 1.6em;
+            }
+            
+            .consent-text {
+                padding: 15px;
+            }
+            
+            #nextButton {
+                padding: 12px;
+                font-size: 1em;
+            }
+            
+            .checkbox-group label {
+                font-size: 0.95em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                margin: 5px auto;
+                padding: 5px;
+            }
+            
+            .container {
+                padding: 15px 10px;
+            }
+            
+            h1 {
+                font-size: 1.4em;
+            }
+            
+            .consent-text {
+                padding: 12px;
+            }
+            
+            ul {
+                margin-left: 15px;
+            }
+            
+            li {
+                font-size: 0.95em;
+            }
+            
+            .checkbox-group {
+                padding: 12px;
+            }
+            
+            .checkbox-group label {
+                font-size: 0.9em;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            #consent-check {
+                margin-right: 0;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>研究知情同意书</h1>
+        
+        <p>感谢您参与本测试。在开始之前，请仔细阅读以下信息：</p>
+
+        <div class="consent-text">
+            <h3>研究说明</h3>
+            <ul>
+                <li>本测试包含5个维度总30 个问题，旨在探索您在恋爱关系中的思维模式和情感倾向。</li>
+                <li>完成测试大约需要 5-10 分钟。</li>
+                <li>请根据您的真实感受和第一反应回答，所有问题没有对错之分。</li>
+            </ul>
+            
+            <h3>隐私与数据</h3>
+            <ul>
+                <li>您的参与是完全自愿的。</li>
+                <li>本测试<strong>不会</strong>收集任何可以识别您个人身份的信息（如姓名、电话或IP地址）。</li>
+                <li>您的匿名回答将用于统计分析，帮助我们了解不同人群的恋爱模式。</li>
+            </ul>
+
+            <h3>自愿原则</h3>
+            <ul>
+                <li>您必须年满 18 周岁才能参与。</li>
+                <li>您可以随时中断测试并退出，无需提供任何理由。</li>
+            </ul>
+            
+            <p style="margin-top: 15px;">如果您对研究有任何疑问，请联系我们。</p>
+        </div>
+
+        <div class="checkbox-group">
+            <label for="consent-check">
+                <input type="checkbox" id="consent-check">
+                我已阅读并理解上述所有条款，确认自愿参与本测试。
+            </label>
+        </div>
+        
+        <button id="nextButton" disabled>开始测试</button>
+    </div>
+
+    <script>
+        const consentCheckbox = document.getElementById("consent-check");
+        const nextButton = document.getElementById("nextButton");
+
+        // 1. 监听复选框的状态变化
+        consentCheckbox.addEventListener('change', function() {
+            // 只有当复选框被勾选时，"下一步"按钮才可用
+            nextButton.disabled = !this.checked;
+        });
+
+        // 2. 监听按钮点击
+        nextButton.addEventListener('click', function() {
+            if (consentCheckbox.checked) {
+                // 如果已同意，跳转到问卷页
+                window.location.href = "questionnaire.html"; 
+            }
+            // (如果未勾选，按钮会保持 disabled 状态，所以不需要 else)
+        });
+    </script>
+
+</body>
+</html>

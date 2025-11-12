@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱脑倾向测试</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FFF7F9; /* 柔和的粉色背景 */
+            color: #444;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.7;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(225, 17, 153, 0.08);
+            border: 1px solid #FFE4E1;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #FFC0CB, #E11299, #C2185B); /* 恋爱脑粉色渐变 */
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: #C2185B;
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            color: #333;
+            text-align: center;
+            margin: 30px 0 20px;
+            border-bottom: 2px solid #EEE;
+            padding-bottom: 10px;
+        }
+        .intro-text {
+            font-size: 1.1em;
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .dimension-card {
+            background: #FFFBFB;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #E11299;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .dimension-card h3 {
+            font-family: 'Playfair Display', serif;
+            color: #E11299;
+            margin-bottom: 10px;
+        }
+        .dimension-card p {
+            font-size: 0.95em;
+            color: #666;
+        }
+        .input-section {
+            margin: 30px 0 20px;
+            text-align: center;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        #accessCodeInput {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            width: 300px;
+            max-width: 100%;
+            background: #fff;
+            color: #333;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        #accessCodeInput:focus {
+            outline: none;
+            border-color: #E11299;
+            box-shadow: 0 0 0 3px rgba(225, 17, 153, 0.1);
+        }
+        #submitButton {
+            padding: 15px 35px;
+            background: linear-gradient(90deg, #E11299, #C2185B);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(225, 17, 153, 0.3);
+        }
+        #submitButton:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(225, 17, 153, 0.4);
+        }
+        #submitButton:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 25px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>恋爱脑倾向测试</h1>
+        
+        <p class="intro-text">
+            我们不是在做临床诊断，而是做一个引发共鸣和思考的测试。<br>
+            我们来尝试把理性分析性的语言，转化成更具画面感和情感共鸣的“镜子”，让你看到自己时能有所触动。
+        </p>
+
+        <div class="dimensions-grid">
+            
+            <div class="dimension-card">
+                <h3>维度一：情感依赖度 (情感的罗盘)</h3>
+                <p><b>它探索的是：</b> 你的心脏是否像系上了一根线，而线的另一端握在ta的手中？</p>
+                <p><b>“恋爱脑”的共鸣：</b> 当ta开心时，你的世界阳光普照；当ta沉默时（哪怕只是“已读不回”），你的天空便乌云密布。这个维度将揭示，你的情绪天气在多大程度上是由对方掌控的。</p>
+            </div>
+            
+            <div class="dimension-card">
+                <h3>维度二：理想化滤镜 (爱情的美颜相机)</h3>
+                <p><b>它探索的是：</b> 你是否戴上了一副特制的“恋人滤镜”，自动美化了ta的一切？</p>
+                <p><b>“恋爱脑”的共鸣：</b> 在这个滤镜下，对方的缺点都变成了“真实”或“可爱”；ta的“不好习惯”也被自动柔化成了“无伤大雅”。</p>
+            </div>
+            
+            <div class="dimension-card">
+                <h3>维度三：界限牺牲度 (坍塌的堡垒)</h3>
+                <p><b>它探索的是：</b> 你愿意从你自己的“堡垒”上拆下多少砖石，只为了给ta搭一座桥？</p>
+                <p><b>“恋爱脑”的共鸣：</b> 当ta的行为（比如不尊重、严重的谎言）撞击你的“底线”时，你是会坚守阵地，还是会“就这一次”而后退一步？</p>
+            </div>
+
+            <div class="dimension-card">
+                <h3>维度四：自我迷失度 (褪色的画像)</h3>
+                <p><b>它探索的是：</b> 你是否感觉自己原本鲜艳的“画像”，正在为了ta而慢慢褪色？</p>
+                <p><b>“恋爱脑”的共鸣：</b> 你曾经热爱的爱好、让你快乐的朋友圈……它们是否在不知不觉中变得模糊而遥远？你是否为了成为“我们”，而逐渐失去了那个独立的“我”？</p>
+            </div>
+
+            <div class="dimension-card">
+                <h3>维度五：关系优先度 (人生的北极星)</h3>
+                <p><b>它探索的是：</b> 在你人生价值的广阔星图中，“爱情”是否是你唯一且永远指向的那颗“北极星”？</p>
+                <p><b>“恋爱脑”的共鸣：</b> 你是否坚信，没有爱情的人生是不完整的？你是否将“拥有一段深刻的关系”视为人生的终极答案？</p>
+            </div>
+        </div>
+
+        <h2>开始测试</h2>
+        <div class="input-section">
+            <p>请输入访问码以进入测试：</p>
+            <div class="input-group">
+                <input type="text" id="accessCodeInput" placeholder="输入访问码...">
+                <button id="submitButton">进入测试</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const accessCodeInput = document.getElementById("accessCodeInput");
+        const submitButton = document.getElementById("submitButton");
+        
+        // 1. 定义 *新后端* 的 API URL
+        // !!! 注意：这是本地测试地址。部署到 Netlify 之前，
+        // 必须将其替换为你的 "lovebrain-backend" 的 Koyeb 公共 URL !!!
+        const API_URL = 'querulous-chelsea-boyn-5cf9ffef.koyeb.app';
+        
+        // 2. 将点击事件监听器改为 async 
+        submitButton.addEventListener("click", async function() {
+            const userInput = accessCodeInput.value.trim();
+            
+            if (!userInput) {
+                alert("请输入访问码。");
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.textContent = "验证中...";
+
+            try {
+                // 3. 发送 POST 请求到 *新后端*
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ accessCode: userInput }) 
+                });
+
+                const result = await response.json();
+
+                // 4. 根据后端的响应执行操作
+                if (response.ok && result.success === true) {
+                    submitButton.textContent = "验证成功...";
+                    submitButton.style.background = "linear-gradient(90deg, #4CAF50, #45a049)";
+                    
+                    setTimeout(() => {
+                        // *** 关键跳转：跳转到 "lovebrain-frontend" 的同意书页 ***
+                        window.location.href = "test.html"; 
+                    }, 800);
+                    
+                } else {
+                    throw new Error(result.message || "访问码错误");
+                }
+
+            } catch (error) {
+                console.error("访问码验证失败:", error);
+                
+                accessCodeInput.style.borderColor = "#E11299"; // 使用新主题的错误颜色
+                
+                setTimeout(() => {
+                    alert(error.message || "无法连接到服务器，请稍后再试。"); 
+                    accessCodeInput.style.borderColor = "#ddd";
+                    submitButton.disabled = false;
+                    submitButton.textContent = "进入测试";
+                }, 300);
+            }
+        });
+        
+        accessCodeInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); 
+                submitButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
